@@ -1,12 +1,12 @@
 /* CSS Grid Layout */
 .app-container {
   display: grid;
-  grid-template-columns: 200px 1fr;
+  grid-template-columns: 1fr;
   grid-template-rows: auto 1fr auto;
   grid-template-areas:
-    "header header"
-    "sidebar main"
-    "footer footer";
+    "header"
+    "main"
+    "footer";
   min-height: 100vh;
   gap: 1rem;
 }
@@ -14,40 +14,139 @@
 .header {
   grid-area: header;
   background-color: #282c34;
-  padding: 1.5rem;
+  padding: 0.75rem 1.5rem;
   color: white;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .header h1 {
   margin: 0;
-  font-size: 1.8rem;
+  font-size: 1.3rem;
 }
 
-.token-counter {
+.header-stats {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.token-counter, .cache-timer {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   background-color: #1a1a1a;
-  padding: 0.75rem 1.25rem;
-  border-radius: 8px;
-  border: 2px solid #D2691E;
+  padding: 0.5rem 0.85rem;
+  border-radius: 6px;
+  border: 1px solid #D2691E;
 }
 
-.token-label {
-  font-size: 0.9rem;
+.token-label, .cache-label {
+  font-size: 0.8rem;
   color: #aaa;
   font-weight: 500;
 }
 
-.token-count {
-  font-size: 1.2rem;
+.token-count, .cache-time {
+  font-size: 1rem;
   font-weight: bold;
   color: #D2691E;
   font-family: 'Courier New', monospace;
+}
+
+.cache-time.expired {
+  color: #888;
+  opacity: 0.6;
+}
+
+.download-btn {
+  padding: 0.5rem 1rem;
+  background-color: #D2691E;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+.download-btn:hover:not(:disabled) {
+  background-color: #B8571A;
+}
+
+.download-btn:disabled {
+  background-color: #666;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Context toggle styles */
+.context-toggle-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  background-color: #1a1a1a;
+  padding: 0.5rem 0.85rem;
+  border-radius: 6px;
+  border: 1px solid #D2691E;
+}
+
+.context-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.context-toggle.locked {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.context-toggle input[type="checkbox"] {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  accent-color: #D2691E;
+}
+
+.context-toggle input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+}
+
+.toggle-label {
+  font-size: 0.8rem;
+  color: #aaa;
+  font-weight: 500;
+  user-select: none;
+}
+
+.context-status {
+  font-size: 0.75rem;
+  color: #aaa;
+  display: flex;
+  align-items: center;
+}
+
+.status-on {
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.status-off {
+  color: #888;
+  font-weight: bold;
+}
+
+.locked-indicator {
+  font-size: 0.7rem;
+  margin-left: 0.25rem;
 }
 
 .sidebar {
@@ -210,12 +309,49 @@
   line-height: 1.5;
   white-space: pre-wrap;
   word-wrap: break-word;
+  flex: 1;
+}
+
+.message-content-wrapper {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.copy-btn {
+  padding: 0.1rem 0.1rem !important;
+  background-color: transparent !important;
+  color: #666 !important;
+  border: none !important;
+  border-radius: 50px !important;
+  cursor: pointer;
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.copy-btn:hover {
+  opacity: 1;
+  color: #D2691E !important;
+  background-color: rgba(210, 105, 30, 0.1) !important;
+  border-color: transparent !important;
+}
+
+.copy-btn:active {
+  transform: scale(0.9);
+}
+
+.copy-btn:focus,
+.copy-btn:focus-visible {
+  outline: none;
 }
 
 .input-container {
   display: flex;
   gap: 1rem;
-  padding: 1rem;
+  padding: 0.75rem;
   background-color: #1a1a1a;
   border-top: 1px solid #D2691E;
   border-radius: 8px;
@@ -223,7 +359,7 @@
 
 .input-container textarea {
   flex: 1;
-  padding: 0.75rem;
+  padding: 0.6rem;
   background-color: #2a2a2a;
   color: white;
   border: 1px solid #D2691E;
@@ -231,8 +367,8 @@
   font-size: 1rem;
   font-family: inherit;
   resize: vertical;
-  min-height: 60px;
-  max-height: 150px;
+  min-height: 50px;
+  max-height: 120px;
 }
 
 .input-container textarea:focus {
@@ -245,13 +381,13 @@
 }
 
 .input-container button {
-  padding: 0.75rem 2rem;
+  padding: 0.5rem 1.25rem;
   background-color: #D2691E;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   transition: background-color 0.2s;
   align-self: flex-end;
@@ -270,13 +406,15 @@
 .footer {
   grid-area: footer;
   background-color: #282c34;
-  padding: 1rem;
+  padding: 0.4rem;
   color: white;
   text-align: center;
 }
 
 .footer p {
   margin: 0;
+  font-size: 0.75rem;
+  opacity: 0.7;
 }
 
 /* Thinking Block Styles */
@@ -299,6 +437,7 @@
   list-style: none;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
 }
 
@@ -342,6 +481,40 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Loading dots animation */
+.loading-dots {
+  display: inline-block;
+}
+
+.loading-dots span {
+  animation: blink 1.4s infinite;
+  opacity: 0;
+}
+
+.loading-dots span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loading-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0%, 20% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }
 
