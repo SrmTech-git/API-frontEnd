@@ -71,6 +71,24 @@
   opacity: 0.6;
 }
 
+.history-nav-btn {
+  padding: 0.5rem 1rem;
+  background-color: #D2691E;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.history-nav-btn:hover {
+  background-color: #B8571A;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(210, 105, 30, 0.3);
+}
+
 .download-btn {
   padding: 0.5rem 1rem;
   background-color: #D2691E;

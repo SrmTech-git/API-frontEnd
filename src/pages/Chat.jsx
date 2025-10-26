@@ -1,8 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { FiCopy, FiCheck } from 'react-icons/fi'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { saveConversation } from '../services/historyService'
 import '../App.css'
 
 function Chat() {
+  const navigate = useNavigate()
+  const location = useLocation()
   const [messages, setMessages] = useState([])
   const [inputMessage, setInputMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -11,6 +15,7 @@ function Chat() {
   const [contextEnabled, setContextEnabled] = useState(false)
   const [contextLocked, setContextLocked] = useState(false)
   const [copiedId, setCopiedId] = useState(null)
+  const [conversationId, setConversationId] = useState(null)
   const messagesEndRef = useRef(null)
 
   // Auto-scroll to bottom when messages change
@@ -21,6 +26,29 @@ function Chat() {
   useEffect(() => {
     scrollToBottom()
   }, [messages, isLoading])
+
+  // Load conversation from history on mount
+  useEffect(() => {
+    // Check if we're loading a conversation from history
+    if (location.state?.conversationId && location.state?.messages) {
+      const { conversationId: loadedConvId, messages: loadedMessages } = location.state
+
+      console.log('Loaded conversation:', loadedConvId)
+
+      // Set the conversation ID and messages
+      setConversationId(loadedConvId)
+      setMessages(loadedMessages)
+
+      // Lock context toggle if there are messages
+      if (loadedMessages.length > 0) {
+        setContextLocked(true)
+      }
+
+      // Clear the location state to prevent re-loading on refresh
+      // We use replace to update the location without the state
+      navigate(location.pathname, { replace: true, state: {} })
+    }
+  }, []) // Run only on mount
 
   // Cache countdown timer effect
   useEffect(() => {
@@ -42,6 +70,14 @@ function Chat() {
   // Sends message to Claude AI through backend
   const sendMessage = async () => {
     if (!inputMessage.trim()) return
+
+    // Generate conversation ID on first message
+    let currentConversationId = conversationId
+    if (!currentConversationId) {
+      currentConversationId = `conv-${Date.now()}`
+      setConversationId(currentConversationId)
+      console.log('Generated new conversation ID:', currentConversationId)
+    }
 
     // Lock context toggle after first message
     if (!contextLocked) {
@@ -85,6 +121,26 @@ function Chat() {
 
       // Reset cache timer to 5 minutes (300 seconds)
       setCacheTimeLeft(300)
+
+      // Auto-save conversation to database after assistant responds
+      // Build the complete messages array including the new assistant message
+      const completeMessages = [...updatedMessages, assistantMessage]
+
+      // Save conversation silently in the background
+      saveConversation(
+        currentConversationId,
+        'default_user',
+        completeMessages,
+        contextEnabled
+      )
+        .then((response) => {
+          console.log('Conversation auto-saved successfully:', response)
+        })
+        .catch((error) => {
+          console.error('Failed to auto-save conversation:', error)
+          // Silent fail - don't interrupt the user experience
+        })
+
     } catch (error) {
       console.error('Error sending message:', error)
       const errorMessage = { role: 'assistant', content: 'Error: Could not connect to Claude AI' }
@@ -114,7 +170,7 @@ function Chat() {
       // Loop through all messages
       messages.forEach((msg, index) => {
         const label = msg.role === 'user' ? 'USER' : 'CLAUDE'
-        textContent += `${label}:\n`
+        textContent += `MSG ${index} (${label}):\n`
         textContent += `${msg.content}\n`
 
         // Add thinking content if available
@@ -174,6 +230,13 @@ function Chat() {
     <div className="page-container">
       <div className="chat-header">
         <div className="header-stats">
+          <button
+            className="history-nav-btn"
+            onClick={() => navigate('/history')}
+            title="View conversation history"
+          >
+            View History
+          </button>
           <button
             className="download-btn"
             onClick={downloadChat}

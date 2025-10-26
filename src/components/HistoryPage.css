@@ -1,0 +1,336 @@
+/* HistoryPage Styles - Dark theme with accent color #D2691E */
+
+.history-page {
+  min-height: 100vh;
+  background-color: #282c34;
+  color: #ffffff;
+  padding: 20px;
+}
+
+/* Header with title and back button */
+.history-header {
+  max-width: 1400px;
+  margin: 0 auto 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #D2691E;
+}
+
+.history-header h1 {
+  margin: 0;
+  color: #D2691E;
+  font-size: 28px;
+}
+
+.back-to-chat-btn {
+  padding: 12px 24px;
+  background-color: #D2691E;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.back-to-chat-btn:hover {
+  background-color: #c55a14;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(210, 105, 30, 0.3);
+}
+
+.back-to-chat-btn:active {
+  transform: translateY(0);
+}
+
+.history-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 20px;
+  height: calc(100vh - 140px);
+}
+
+/* Left panel - Conversations list */
+.conversations-list {
+  background-color: #1e2228;
+  border-radius: 8px;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.conversations-list h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #D2691E;
+  font-size: 24px;
+}
+
+/* Loading and empty states */
+.loading-message {
+  text-align: center;
+  padding: 40px 20px;
+  color: #888;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #888;
+}
+
+.empty-state p:first-child {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+/* Conversation cards */
+.conversation-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.conversation-card {
+  background-color: #2d3139;
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+/* Hover effect for conversation cards */
+.conversation-card:hover {
+  background-color: #363b45;
+  border-color: #D2691E;
+  transform: translateX(4px);
+}
+
+/* Selected conversation card */
+.conversation-card.selected {
+  background-color: #363b45;
+  border-color: #D2691E;
+}
+
+.conversation-header {
+  margin-bottom: 8px;
+}
+
+.conversation-id {
+  font-weight: bold;
+  color: #D2691E;
+  font-size: 14px;
+}
+
+.conversation-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.conversation-date {
+  color: #aaa;
+  font-size: 13px;
+  margin: 0;
+}
+
+.conversation-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #888;
+  margin: 0;
+}
+
+.message-count {
+  color: #61dafb;
+}
+
+.context-status {
+  color: #98c379;
+}
+
+/* Right panel - Conversation details */
+.conversation-details-panel {
+  background-color: #1e2228;
+  border-radius: 8px;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.no-selection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #888;
+  font-size: 16px;
+}
+
+/* Conversation full view */
+.conversation-full-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.conversation-full-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #D2691E;
+}
+
+.conversation-full-header h3 {
+  margin: 0;
+  color: #D2691E;
+  font-size: 22px;
+}
+
+/* Continue conversation button */
+.continue-button {
+  background-color: #D2691E;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.continue-button:hover {
+  background-color: #c55a14;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(210, 105, 30, 0.3);
+}
+
+.continue-button:active {
+  transform: translateY(0);
+}
+
+/* Conversation info section */
+.conversation-info {
+  background-color: #2d3139;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.conversation-info p {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #ddd;
+}
+
+.conversation-info strong {
+  color: #D2691E;
+  margin-right: 8px;
+}
+
+/* Messages container */
+.messages-container {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.messages-container h4 {
+  color: #D2691E;
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+
+.messages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Individual message items */
+.message-item {
+  background-color: #2d3139;
+  border-radius: 8px;
+  padding: 12px;
+  border-left: 3px solid #888;
+}
+
+/* User messages - blue accent */
+.message-item.user {
+  border-left-color: #61dafb;
+}
+
+/* Assistant messages - orange accent */
+.message-item.assistant {
+  border-left-color: #D2691E;
+}
+
+.message-role {
+  font-weight: bold;
+  font-size: 12px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.message-item.user .message-role {
+  color: #61dafb;
+}
+
+.message-item.assistant .message-role {
+  color: #D2691E;
+}
+
+.message-content {
+  color: #ddd;
+  line-height: 1.5;
+  font-size: 14px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Scrollbar styling for dark theme */
+.conversations-list::-webkit-scrollbar,
+.conversation-details-panel::-webkit-scrollbar,
+.messages-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.conversations-list::-webkit-scrollbar-track,
+.conversation-details-panel::-webkit-scrollbar-track,
+.messages-container::-webkit-scrollbar-track {
+  background: #1e2228;
+}
+
+.conversations-list::-webkit-scrollbar-thumb,
+.conversation-details-panel::-webkit-scrollbar-thumb,
+.messages-container::-webkit-scrollbar-thumb {
+  background: #D2691E;
+  border-radius: 4px;
+}
+
+.conversations-list::-webkit-scrollbar-thumb:hover,
+.conversation-details-panel::-webkit-scrollbar-thumb:hover,
+.messages-container::-webkit-scrollbar-thumb:hover {
+  background: #c55a14;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 1024px) {
+  .history-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .conversations-list {
+    max-height: 300px;
+  }
+}
