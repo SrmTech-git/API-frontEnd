@@ -1,11 +1,10 @@
-import '../App.css'
+// This is the page wrapper for the Tools page
+// It renders the ToolsPage component which handles the welfare analysis functionality
+
+import ToolsPage from '../components/ToolsPage';
 
 function Tools() {
-  return (
-    <div className="page-container">
-      <h2>Tools</h2>
-    </div>
-  )
+  return <ToolsPage />;
 }
 
-export default Tools
+export default Tools;

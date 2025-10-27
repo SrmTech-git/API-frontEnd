@@ -117,3 +117,79 @@ export const fetchConversation = async (conversationId) => {
     throw error;
   }
 };
+
+/**
+ * Soft delete a conversation
+ *
+ * @param {string} conversationId - The ID of the conversation to delete
+ * @returns {Object} Response from the backend with success status
+ */
+export const softDeleteConversation = async (conversationId) => {
+  try {
+    // Make a PUT request to soft delete the conversation
+    const response = await fetch(
+      `${API_BASE_URL}/conversations/${conversationId}/delete`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }
+    );
+
+    // Check if the response is okay
+    if (!response.ok) {
+      throw new Error(`Failed to delete conversation: ${response.status}`);
+    }
+
+    // Parse and return the JSON response
+    const data = await response.json();
+    return data;
+
+  } catch (error) {
+    // Log the error and re-throw it so the caller can handle it
+    console.error('Error deleting conversation:', error);
+    throw error;
+  }
+};
+
+/**
+ * Search conversations with filters
+ *
+ * @param {Object} searchParams - Search criteria object
+ * @param {string} searchParams.userId - User ID to search conversations for (required)
+ * @param {string} searchParams.dateFrom - Filter by conversations created after this date (optional)
+ * @param {string} searchParams.dateTo - Filter by conversations created before this date (optional)
+ * @param {Array<string>} searchParams.tags - Filter by tags (optional)
+ * @param {boolean} searchParams.contextEnabled - Filter by context status (optional)
+ * @returns {Object} Response with conversations array and count
+ */
+export const searchConversations = async (searchParams) => {
+  try {
+    // Make a POST request to search conversations
+    const response = await fetch(
+      `${API_BASE_URL}/conversations/search`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(searchParams)
+      }
+    );
+
+    // Check if the response is okay
+    if (!response.ok) {
+      throw new Error(`Failed to search conversations: ${response.status}`);
+    }
+
+    // Parse and return the JSON response
+    const data = await response.json();
+    return data;
+
+  } catch (error) {
+    // Log the error and re-throw it so the caller can handle it
+    console.error('Error searching conversations:', error);
+    throw error;
+  }
+};

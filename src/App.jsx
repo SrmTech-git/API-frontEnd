@@ -13,14 +13,11 @@ function App() {
         <Sidebar />
 
         <div className="main-layout">
-          <header className="header">
-            <h1>Claude AI Chat</h1>
-          </header>
-
           <main className="main-content">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/chat" element={<Chat />} />
+              <Route path="/tools/:conversationId" element={<Tools />} />
               <Route path="/tools" element={<Tools />} />
               <Route path="/history" element={<History />} />
             </Routes>

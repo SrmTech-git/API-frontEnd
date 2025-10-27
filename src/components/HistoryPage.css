@@ -70,6 +70,161 @@
   font-size: 24px;
 }
 
+/* Search Panel Styles */
+.search-panel {
+  background-color: #2d3139;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #3a3f4b;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Toggle button for expanding/collapsing search */
+.search-toggle-btn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: transparent;
+  border: none;
+  color: #D2691E;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.search-toggle-btn:hover {
+  background-color: rgba(210, 105, 30, 0.1);
+  transform: translateX(2px);
+}
+
+.search-toggle-btn .chevron {
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+
+/* Container for search fields with smooth transition */
+.search-fields-container {
+  margin-top: 15px;
+  animation: slideDown 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.search-field {
+  margin-bottom: 15px;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.search-field label {
+  display: block;
+  color: #aaa;
+  font-size: 13px;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.search-field input,
+.search-field select {
+  width: 100%;
+  padding: 10px;
+  background-color: #1e2228;
+  border: 1px solid #3a3f4b;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.search-field input:focus,
+.search-field select:focus {
+  outline: none;
+  border-color: #D2691E;
+}
+
+.search-field input::placeholder {
+  color: #666;
+}
+
+.search-field select {
+  cursor: pointer;
+}
+
+.search-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn-search,
+.btn-clear {
+  flex: 1;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-search {
+  background-color: #D2691E;
+  color: white;
+}
+
+.btn-search:hover:not(:disabled) {
+  background-color: #c55a14;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(210, 105, 30, 0.3);
+}
+
+.btn-search:disabled {
+  background-color: #666;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.btn-clear {
+  background-color: #555;
+  color: white;
+}
+
+.btn-clear:hover:not(:disabled) {
+  background-color: #666;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-clear:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.btn-search:active:not(:disabled),
+.btn-clear:active:not(:disabled) {
+  transform: translateY(0);
+}
+
 /* Loading and empty states */
 .loading-message {
   text-align: center;
@@ -96,6 +251,7 @@
 }
 
 .conversation-card {
+  position: relative; /* Needed for absolute positioning of badges */
   background-color: #2d3139;
   border-radius: 8px;
   padding: 16px;
@@ -119,6 +275,7 @@
 
 .conversation-header {
   margin-bottom: 8px;
+  padding-top: 35px;
 }
 
 .conversation-id {
@@ -153,6 +310,72 @@
 
 .context-status {
   color: #98c379;
+}
+
+/* Delete icon button */
+.delete-icon-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #888;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.delete-icon-btn:hover {
+  color: #ff4444;
+  background-color: rgba(255, 68, 68, 0.1);
+  transform: scale(1.1);
+}
+
+.delete-icon-btn:active {
+  transform: scale(0.95);
+}
+
+/* Analyzed badge - green indicator in top-left corner */
+.analyzed-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #4CAF50;
+  color: white;
+  padding: 0.3rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Analyze button - orange button in conversation details */
+.analyze-button {
+  background: #D2691E;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  transition: all 0.2s ease;
+  display: inline-block;
+  font-weight: 500;
+}
+
+.analyze-button:hover {
+  background: #b85a19;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(210, 105, 30, 0.3);
+}
+
+.analyze-button:active {
+  transform: translateY(0);
 }
 
 /* Right panel - Conversation details */
@@ -333,4 +556,117 @@
   .conversations-list {
     max-height: 300px;
   }
+}
+
+/* Delete Confirmation Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background-color: #2d3139;
+  border: 2px solid #D2691E;
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-heading {
+  margin: 0 0 20px 0;
+  color: #D2691E;
+  font-size: 24px;
+  text-align: center;
+}
+
+.modal-body {
+  margin-bottom: 25px;
+}
+
+.modal-warning {
+  color: #ff9966;
+  font-weight: bold;
+  margin: 0 0 15px 0;
+  font-size: 16px;
+}
+
+.modal-info {
+  color: #ddd;
+  line-height: 1.6;
+  margin: 0;
+  font-size: 14px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.modal-btn {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-btn {
+  background-color: #555;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background-color: #666;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.delete-btn {
+  background-color: #ff4444;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #ff2222;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 68, 68, 0.4);
+}
+
+.modal-btn:active {
+  transform: translateY(0);
 }

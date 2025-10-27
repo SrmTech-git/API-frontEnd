@@ -3,7 +3,9 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchHistory, fetchConversation } from '../services/historyService';
+import { FaTrash } from 'react-icons/fa';
+import { fetchHistory, fetchConversation, softDeleteConversation, searchConversations } from '../services/historyService';
+import { checkAnalysisExists } from '../services/analysisService';
 import './HistoryPage.css';
 
 const HistoryPage = () => {
@@ -18,10 +20,55 @@ const HistoryPage = () => {
   const [loading, setLoading] = useState(true);
   const [loadingConversation, setLoadingConversation] = useState(false);
 
+  // State for delete confirmation modal
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [conversationToDelete, setConversationToDelete] = useState(null);
+
+  // State for search functionality
+  const [searchParams, setSearchParams] = useState({
+    dateFrom: '',
+    dateTo: '',
+    tags: '',
+    contextEnabled: ''
+  });
+  const [isSearching, setIsSearching] = useState(false);
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+
+  // State for tracking which conversations have been analyzed
+  const [analyzedConversations, setAnalyzedConversations] = useState(new Set());
+
   // Fetch conversation history when the component first loads
   useEffect(() => {
     loadConversationHistory();
   }, []);
+
+  // Load analysis status for all conversations
+  useEffect(() => {
+    const loadAnalysisStatus = async () => {
+      if (conversations.length === 0) return;
+
+      const analyzed = new Set();
+
+      // Check each conversation for analysis status
+      for (const conv of conversations) {
+        try {
+          const result = await checkAnalysisExists(conv.conversationId);
+          if (result.exists) {
+            analyzed.add(conv.conversationId);
+          }
+        } catch (error) {
+          // Log error but don't break the UI
+          console.error('Error checking analysis status for', conv.conversationId, ':', error);
+        }
+      }
+
+      setAnalyzedConversations(analyzed);
+    };
+
+    if (conversations.length > 0) {
+      loadAnalysisStatus();
+    }
+  }, [conversations]);
 
   // Function to fetch the list of conversations from the backend
   const loadConversationHistory = async () => {
@@ -72,6 +119,127 @@ const HistoryPage = () => {
     });
   };
 
+  // Function to open delete confirmation modal
+  const handleDeleteClick = (conversationId, event) => {
+    // Prevent the card click event from firing
+    event.stopPropagation();
+
+    // Set the conversation to delete and show modal
+    setConversationToDelete(conversationId);
+    setShowDeleteModal(true);
+  };
+
+  // Function to cancel delete and close modal
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false);
+    setConversationToDelete(null);
+  };
+
+  // Function to confirm and execute delete
+  const handleConfirmDelete = async () => {
+    if (!conversationToDelete) return;
+
+    try {
+      // Call the soft delete API
+      await softDeleteConversation(conversationToDelete);
+
+      // Remove the conversation from the list
+      setConversations(prevConversations =>
+        prevConversations.filter(conv => conv.conversationId !== conversationToDelete)
+      );
+
+      // Clear selected conversation if it was the one deleted
+      if (selectedConversation?.conversationId === conversationToDelete) {
+        setSelectedConversation(null);
+      }
+
+      // Close modal and clear state
+      setShowDeleteModal(false);
+      setConversationToDelete(null);
+
+      console.log('Conversation deleted successfully:', conversationToDelete);
+
+    } catch (error) {
+      console.error('Failed to delete conversation:', error);
+      alert('Failed to delete conversation. Please try again.');
+      setShowDeleteModal(false);
+      setConversationToDelete(null);
+    }
+  };
+
+  // Function to handle search
+  const handleSearch = async () => {
+    try {
+      setIsSearching(true);
+
+      // Build search parameters object
+      const searchRequest = {
+        userId: 'default_user'
+      };
+
+      // Add dateFrom if provided (convert to ISO format)
+      if (searchParams.dateFrom) {
+        searchRequest.dateFrom = new Date(searchParams.dateFrom).toISOString();
+      }
+
+      // Add dateTo if provided (convert to ISO format)
+      if (searchParams.dateTo) {
+        searchRequest.dateTo = new Date(searchParams.dateTo).toISOString();
+      }
+
+      // Add tags if provided (split comma-separated string into array)
+      if (searchParams.tags && searchParams.tags.trim()) {
+        searchRequest.tags = searchParams.tags.split(',').map(tag => tag.trim());
+      }
+
+      // Add contextEnabled if a specific value is selected
+      if (searchParams.contextEnabled !== '') {
+        searchRequest.contextEnabled = searchParams.contextEnabled === 'true';
+      }
+
+      // Call the search API
+      const result = await searchConversations(searchRequest);
+
+      // Update conversations with search results
+      setConversations(result.conversations);
+
+      // Log result count
+      console.log(`Search found ${result.count} conversations`);
+
+    } catch (error) {
+      console.error('Failed to search conversations:', error);
+      alert('Failed to search conversations. Please try again.');
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  // Function to clear search and reload all conversations
+  const handleClearSearch = async () => {
+    try {
+      // Reset search parameters
+      setSearchParams({
+        dateFrom: '',
+        dateTo: '',
+        tags: '',
+        contextEnabled: ''
+      });
+
+      // Reload all conversations
+      setLoading(true);
+      const historyData = await fetchHistory('default_user');
+      setConversations(historyData);
+
+      console.log('Search cleared, showing all conversations');
+
+    } catch (error) {
+      console.error('Failed to reload conversations:', error);
+      alert('Failed to reload conversations. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Function to format a date/time string into a readable format
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -106,6 +274,82 @@ const HistoryPage = () => {
         <div className="conversations-list">
           <h2>Your Conversations</h2>
 
+          {/* Search Panel */}
+          <div className="search-panel">
+            <button
+              className="search-toggle-btn"
+              onClick={() => setIsSearchExpanded(!isSearchExpanded)}
+            >
+              <span>Search Conversations</span>
+              <span className="chevron">{isSearchExpanded ? '▲' : '▼'}</span>
+            </button>
+
+            {isSearchExpanded && (
+              <div className="search-fields-container">
+                <div className="search-field">
+                  <label htmlFor="dateFrom">Date From:</label>
+                  <input
+                    type="datetime-local"
+                    id="dateFrom"
+                    value={searchParams.dateFrom}
+                    onChange={(e) => setSearchParams({...searchParams, dateFrom: e.target.value})}
+                  />
+                </div>
+
+                <div className="search-field">
+                  <label htmlFor="dateTo">Date To:</label>
+                  <input
+                    type="datetime-local"
+                    id="dateTo"
+                    value={searchParams.dateTo}
+                    onChange={(e) => setSearchParams({...searchParams, dateTo: e.target.value})}
+                  />
+                </div>
+
+                <div className="search-field">
+                  <label htmlFor="tags">Tags:</label>
+                  <input
+                    type="text"
+                    id="tags"
+                    placeholder="comma-separated tags (e.g., work,important)"
+                    value={searchParams.tags}
+                    onChange={(e) => setSearchParams({...searchParams, tags: e.target.value})}
+                  />
+                </div>
+
+                <div className="search-field">
+                  <label htmlFor="contextFilter">Context:</label>
+                  <select
+                    id="contextFilter"
+                    value={searchParams.contextEnabled}
+                    onChange={(e) => setSearchParams({...searchParams, contextEnabled: e.target.value})}
+                  >
+                    <option value="">All</option>
+                    <option value="true">Enabled</option>
+                    <option value="false">Disabled</option>
+                  </select>
+                </div>
+
+                <div className="search-actions">
+                  <button
+                    className="btn-search"
+                    onClick={handleSearch}
+                    disabled={isSearching}
+                  >
+                    {isSearching ? 'Searching...' : 'Search'}
+                  </button>
+                  <button
+                    className="btn-clear"
+                    onClick={handleClearSearch}
+                    disabled={isSearching}
+                  >
+                    Clear
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Show loading spinner while fetching history */}
           {loading && (
             <div className="loading-message">
@@ -134,6 +378,19 @@ const HistoryPage = () => {
                   }`}
                   onClick={() => handleConversationClick(conversation.conversationId)}
                 >
+                  {/* Analyzed Badge - show if conversation has been analyzed */}
+                  {analyzedConversations.has(conversation.conversationId) && (
+                    <span className="analyzed-badge">✓ Analyzed</span>
+                  )}
+
+                  <button
+                    className="delete-icon-btn"
+                    onClick={(e) => handleDeleteClick(conversation.conversationId, e)}
+                    title="Delete conversation"
+                  >
+                    <FaTrash />
+                  </button>
+
                   <div className="conversation-header">
                     <span className="conversation-id">
                       {conversation.conversationId}
@@ -153,6 +410,18 @@ const HistoryPage = () => {
                         Context: {conversation.contextEnabled ? 'On' : 'Off'}
                       </span>
                     </p>
+
+                    {/* Analyze Button */}
+                    <button
+                      className="analyze-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/tools/${conversation.conversationId}`);
+                      }}
+                      title="Analyze this conversation"
+                    >
+                      📊 Analyze
+                    </button>
                   </div>
                 </div>
               ))}
@@ -220,6 +489,40 @@ const HistoryPage = () => {
           )}
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="modal-overlay" onClick={handleCancelDelete}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2 className="modal-heading">Delete Conversation?</h2>
+
+            <div className="modal-body">
+              <p className="modal-warning">
+                This conversation contains valuable research data about our interactions.
+              </p>
+              <p className="modal-info">
+                The conversation will be hidden from your history but not permanently removed from the database.
+                This helps preserve important data while keeping your interface clean.
+              </p>
+            </div>
+
+            <div className="modal-actions">
+              <button
+                className="modal-btn cancel-btn"
+                onClick={handleCancelDelete}
+              >
+                Cancel
+              </button>
+              <button
+                className="modal-btn delete-btn"
+                onClick={handleConfirmDelete}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
