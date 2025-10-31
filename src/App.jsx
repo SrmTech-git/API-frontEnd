@@ -4,6 +4,7 @@ import Home from './pages/Home'
 import Chat from './pages/Chat'
 import Tools from './pages/Tools'
 import History from './pages/History'
+import Dashboard from './pages/Dashboard'
 import './App.css'
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/chat" element={<Chat />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/tools/:conversationId" element={<Tools />} />
               <Route path="/tools" element={<Tools />} />
               <Route path="/history" element={<History />} />

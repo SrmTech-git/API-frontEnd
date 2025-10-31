@@ -1,0 +1,125 @@
+/* TagUsageList Styles - Consistent with dark theme and accent color #D2691E */
+
+.tag-usage-list {
+  background-color: #1e2228;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.tag-usage-list .card-header {
+  margin: 0 0 1.5rem 0;
+  color: #D2691E;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-bottom: 2px solid #D2691E;
+  padding-bottom: 0.5rem;
+}
+
+/* Loading, error, and empty messages */
+.tag-usage-list .loading-message,
+.tag-usage-list .error-message,
+.tag-usage-list .empty-message {
+  text-align: center;
+  padding: 2rem;
+  color: #888;
+}
+
+.tag-usage-list .error-message {
+  color: #ff4444;
+}
+
+.tag-usage-list .empty-message {
+  color: #aaa;
+  font-style: italic;
+}
+
+/* Tags container */
+.tags-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+/* Scrollbar styling for tags container */
+.tags-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tags-container::-webkit-scrollbar-track {
+  background: #2a2a2a;
+  border-radius: 4px;
+}
+
+.tags-container::-webkit-scrollbar-thumb {
+  background: #D2691E;
+  border-radius: 4px;
+}
+
+.tags-container::-webkit-scrollbar-thumb:hover {
+  background: #b85a19;
+}
+
+/* Individual tag items */
+.tag-item {
+  background-color: #2d3139;
+  border-radius: 6px;
+  padding: 0.875rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-left: 3px solid #D2691E;
+  transition: all 0.2s ease;
+}
+
+.tag-item:hover {
+  background-color: #353a45;
+  transform: translateX(4px);
+  border-left-width: 4px;
+}
+
+/* Tag name */
+.tag-name {
+  color: #ddd;
+  font-size: 0.95rem;
+  font-weight: 500;
+  flex: 1;
+}
+
+/* Tag count */
+.tag-count {
+  color: #D2691E;
+  font-size: 1.1rem;
+  font-weight: bold;
+  white-space: nowrap;
+  margin-left: 1rem;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .tag-usage-list {
+    padding: 1rem;
+  }
+
+  .tag-usage-list .card-header {
+    font-size: 1.25rem;
+  }
+
+  .tags-container {
+    max-height: 300px;
+  }
+
+  .tag-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .tag-count {
+    font-size: 1rem;
+    margin-left: 0;
+  }
+}

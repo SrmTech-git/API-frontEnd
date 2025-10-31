@@ -475,6 +475,17 @@ const HistoryPage = () => {
                         <div className="message-role">
                           {message.role === 'user' ? 'You' : 'Claude'}
                         </div>
+
+                        {/* Display thinking block if it exists */}
+                        {message.thinking && (
+                          <div className="message-thinking">
+                            <strong>Thinking:</strong>
+                            <div className="thinking-content">
+                              {message.thinking}
+                            </div>
+                          </div>
+                        )}
+
                         <div className="message-content">
                           {message.content}
                         </div>

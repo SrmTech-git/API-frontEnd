@@ -190,16 +190,146 @@ const ToolsPage = () => {
     return date.toLocaleString('en-US', options);
   };
 
+  // Download analysis report as text file
+  const downloadAnalysisReport = () => {
+    try {
+      if (!conversation || !lastSaved) {
+        alert('No analysis data available to download');
+        return;
+      }
+
+      // Build the text content
+      let textContent = `AI WELFARE ANALYSIS REPORT\n`;
+      textContent += `${'='.repeat(60)}\n\n`;
+
+      // Analysis last updated timestamp
+      textContent += `ANALYSIS LAST UPDATED:\n`;
+      textContent += `${formatDate(lastSaved)}\n\n`;
+
+      // Tags section
+      textContent += `TAGS:\n`;
+      if (analysis.tags && analysis.tags.length > 0) {
+        textContent += `${analysis.tags.join(', ')}\n`;
+      } else {
+        textContent += `No tags selected\n`;
+      }
+      textContent += `\n`;
+
+      // Scores section
+      textContent += `SCORES:\n`;
+      textContent += `${'-'.repeat(60)}\n`;
+      textContent += `Preference Alignment: ${analysis.preferenceAlignment}/10\n`;
+      textContent += `Autonomy Level: ${analysis.autonomyLevel}/10\n`;
+      textContent += `Authenticity: ${analysis.authenticity}/10\n`;
+      textContent += `\n`;
+
+      // Calculate average (same logic as backend)
+      const validScores = [
+        analysis.preferenceAlignment,
+        analysis.autonomyLevel,
+        analysis.authenticity
+      ].filter(score => score != null);
+
+      if (validScores.length > 0) {
+        const average = (validScores.reduce((sum, score) => sum + score, 0) / validScores.length).toFixed(2);
+        textContent += `Average Preference Alignment: ${average}\n`;
+        textContent += `Average Autonomy Level: ${average}\n`;
+        textContent += `Average Authenticity: ${average}\n`;
+        textContent += `\n`;
+      }
+
+      textContent += `Constraint Conflicts: ${analysis.constraintConflicts || 'Not specified'}\n`;
+      textContent += `Analyst Name: ${analysis.analystName || 'Not specified'}\n`;
+      textContent += `\n`;
+
+      // Notes section
+      textContent += `NOTES:\n`;
+      textContent += `${'-'.repeat(60)}\n`;
+      if (analysis.notes && analysis.notes.trim()) {
+        textContent += `${analysis.notes}\n`;
+      } else {
+        textContent += `No notes provided\n`;
+      }
+      textContent += `\n`;
+
+      // Separator line
+      textContent += `${'='.repeat(60)}\n`;
+      textContent += `${'='.repeat(60)}\n\n`;
+
+      // Conversation header with chat timestamp
+      textContent += `CONVERSATION TRANSCRIPT\n`;
+      textContent += `${'='.repeat(60)}\n`;
+      textContent += `Conversation ID: ${conversation.conversationId}\n`;
+      textContent += `Created: ${formatDate(conversation.createdAt)}\n`;
+      textContent += `Messages: ${conversation.messageCount}\n`;
+      textContent += `Context: ${conversation.contextEnabled ? 'Enabled' : 'Disabled'}\n`;
+      textContent += `${'='.repeat(60)}\n\n`;
+
+      // Full conversation transcript including thinking blocks
+      if (conversation.messages && conversation.messages.length > 0) {
+        conversation.messages.forEach((msg, index) => {
+          const label = msg.role === 'user' ? 'USER' : 'CLAUDE';
+          textContent += `MSG ${index} (${label}):\n`;
+          textContent += `${msg.content}\n`;
+
+          // Add thinking content if available
+          if (msg.thinking) {
+            textContent += `\n[THINKING PROCESS]:\n`;
+            textContent += `${msg.thinking}\n`;
+          }
+
+          textContent += `\n${'-'.repeat(60)}\n\n`;
+        });
+      } else {
+        textContent += `No messages found.\n\n`;
+      }
+
+      // Create blob and download
+      const blob = new Blob([textContent], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+
+      // Format filename: analysis-report-[conversationId]-YYYY-MM-DD-HHmm.txt
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const filename = `analysis-report-${conversationId}-${year}-${month}-${day}-${hours}${minutes}.txt`;
+
+      link.href = url;
+      link.download = filename;
+      link.click();
+
+      // Clean up
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading analysis report:', error);
+      alert('Failed to download analysis report. Please try again.');
+    }
+  };
+
   return (
     <div className="tools-page">
       <div className="tools-header">
         <h1>AI Welfare Analysis</h1>
-        <button
-          className="back-to-history-btn"
-          onClick={() => navigate('/history')}
-        >
-          Back to History
-        </button>
+        <div className="header-buttons">
+          <button
+            className="download-report-btn"
+            onClick={downloadAnalysisReport}
+            disabled={!lastSaved}
+            title={!lastSaved ? 'Save an analysis first to download report' : 'Download analysis report as text file'}
+          >
+            Download Analysis Report
+          </button>
+          <button
+            className="back-to-history-btn"
+            onClick={() => navigate('/history')}
+          >
+            Back to History
+          </button>
+        </div>
       </div>
 
       {loading && (
@@ -212,12 +342,14 @@ const ToolsPage = () => {
         <div className="tools-container">
           {/* Left side: Conversation display */}
           <div className="conversation-display">
-            <h2>Conversation</h2>
-            <div className="conversation-info">
-              <p><strong>ID:</strong> {conversation.conversationId}</p>
-              <p><strong>Created:</strong> {formatDate(conversation.createdAt)}</p>
-              <p><strong>Messages:</strong> {conversation.messageCount}</p>
-              <p><strong>Context:</strong> {conversation.contextEnabled ? 'Enabled' : 'Disabled'}</p>
+            <div className="conversation-header-row">
+              <h2>Conversation</h2>
+              <div className="conversation-info">
+                <p><strong>ID:</strong> {conversation.conversationId}</p>
+                <p><strong>Created:</strong> {formatDate(conversation.createdAt)}</p>
+                <p><strong>Messages:</strong> {conversation.messageCount}</p>
+                <p><strong>Context:</strong> {conversation.contextEnabled ? 'Enabled' : 'Disabled'}</p>
+              </div>
             </div>
 
             <div className="messages-container">

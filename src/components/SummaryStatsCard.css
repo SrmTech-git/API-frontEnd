@@ -1,0 +1,88 @@
+/* SummaryStatsCard Styles - Consistent with dark theme and accent color #D2691E */
+
+.summary-stats-card {
+  background-color: #1e2228;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.summary-stats-card .card-header {
+  margin: 0 0 1.5rem 0;
+  color: #D2691E;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-bottom: 2px solid #D2691E;
+  padding-bottom: 0.5rem;
+}
+
+/* Loading and error messages */
+.summary-stats-card .loading-message,
+.summary-stats-card .error-message {
+  text-align: center;
+  padding: 2rem;
+  color: #888;
+}
+
+.summary-stats-card .error-message {
+  color: #ff4444;
+}
+
+/* Stats container */
+.stats-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Individual stat items */
+.stat-item {
+  background-color: #2d3139;
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-left: 4px solid #D2691E;
+  transition: all 0.2s ease;
+}
+
+.stat-item:hover {
+  background-color: #353a45;
+  transform: translateX(4px);
+}
+
+/* Stat labels and values */
+.stat-label {
+  color: #ddd;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.stat-value {
+  color: #D2691E;
+  font-size: 1.5rem;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .summary-stats-card {
+    padding: 1rem;
+  }
+
+  .summary-stats-card .card-header {
+    font-size: 1.25rem;
+  }
+
+  .stat-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .stat-value {
+    font-size: 1.25rem;
+  }
+}

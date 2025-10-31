@@ -406,15 +406,16 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 15px;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
   border-bottom: 2px solid #D2691E;
+  flex-shrink: 0;
 }
 
 .conversation-full-header h3 {
   margin: 0;
   color: #D2691E;
-  font-size: 22px;
+  font-size: 18px;
 }
 
 /* Continue conversation button */
@@ -422,9 +423,9 @@
   background-color: #D2691E;
   color: white;
   border: none;
-  padding: 12px 24px;
+  padding: 8px 16px;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -441,35 +442,43 @@
 }
 
 /* Conversation info section */
-.conversation-info {
+.conversation-details-panel .conversation-info {
   background-color: #2d3139;
-  padding: 15px;
+  padding: 0.5rem 0.75rem !important;
   border-radius: 6px;
-  margin-bottom: 20px;
+  margin-bottom: 0.5rem !important;
+  display: block !important;
+  flex: none !important;
+  flex-shrink: 0;
+  height: fit-content !important;
 }
 
-.conversation-info p {
-  margin: 8px 0;
-  font-size: 14px;
+.conversation-details-panel .conversation-info p {
+  margin: 0.25rem 0 !important;
+  font-size: 12px;
   color: #ddd;
+  line-height: 1.4;
+  display: block !important;
 }
 
-.conversation-info strong {
+.conversation-details-panel .conversation-info strong {
   color: #D2691E;
-  margin-right: 8px;
+  margin-right: 6px;
+  font-size: 12px;
 }
 
 /* Messages container */
 .messages-container {
   flex: 1;
   overflow-y: auto;
+  min-height: 0;
 }
 
 .messages-container h4 {
   color: #D2691E;
   margin-top: 0;
-  margin-bottom: 15px;
-  font-size: 18px;
+  margin-bottom: 8px;
+  font-size: 15px;
 }
 
 .messages-list {
@@ -518,6 +527,30 @@
   font-size: 14px;
   white-space: pre-wrap;
   word-wrap: break-word;
+}
+
+/* Thinking block styling */
+.message-thinking {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(97, 218, 251, 0.1);
+  border-left: 3px solid #61dafb;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
+.message-thinking strong {
+  color: #61dafb;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.thinking-content {
+  color: #ccc;
+  white-space: pre-wrap;
+  font-family: 'Courier New', monospace;
+  line-height: 1.5;
 }
 
 /* Scrollbar styling for dark theme */

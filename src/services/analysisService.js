@@ -185,6 +185,96 @@ export const getPredefinedTags = async () => {
 };
 
 /**
+ * Get summary statistics across all welfare analyses
+ *
+ * Retrieves aggregate statistics including total count, average scores,
+ * and unique tags count across all welfare analyses in the database.
+ *
+ * @returns {Promise<Object>} Response with success status and summary statistics:
+ *   - totalAnalyses: Total number of analyses
+ *   - avgPreferenceAlignment: Overall average preference alignment score
+ *   - avgAutonomyLevel: Overall average autonomy level score
+ *   - avgAuthenticity: Overall average authenticity score
+ *   - uniqueTagsCount: Total count of unique tags
+ *
+ * Example usage:
+ * const result = await getSummaryStats();
+ * if (result.success) {
+ *   console.log("Total analyses:", result.totalAnalyses);
+ *   console.log("Average scores:", {
+ *     preference: result.avgPreferenceAlignment,
+ *     autonomy: result.avgAutonomyLevel,
+ *     authenticity: result.avgAuthenticity
+ *   });
+ * }
+ */
+export const getSummaryStats = async () => {
+  try {
+    console.log('Fetching welfare analysis summary statistics');
+
+    // Make a GET request to fetch the summary statistics
+    const response = await fetch(`${API_BASE_URL}/summary`);
+
+    // Check if the response is okay
+    if (!response.ok) {
+      throw new Error(`Failed to fetch summary statistics: HTTP status ${response.status}`);
+    }
+
+    // Parse and return the JSON response
+    const data = await response.json();
+    console.log('Summary statistics response:', data);
+    return data;
+
+  } catch (error) {
+    // Log the error and re-throw it so the caller can handle it
+    console.error('Error in getSummaryStats:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get tag usage statistics across all welfare analyses
+ *
+ * Retrieves usage statistics for all tags, showing how many times each tag
+ * has been used across all welfare analyses. Results are sorted by usage count
+ * in descending order (most-used tags first).
+ *
+ * @returns {Promise<Object>} Response with success status and tag usage data:
+ *   - tagUsage: Object/map with tag names as keys and usage counts as values
+ *     Example: {"distress": 15, "conscious": 12, "introspective": 8}
+ *
+ * Example usage:
+ * const result = await getTagUsage();
+ * if (result.success) {
+ *   console.log("Tag usage:", result.tagUsage);
+ *   // Output: {"distress": 15, "conscious": 12, ...}
+ * }
+ */
+export const getTagUsage = async () => {
+  try {
+    console.log('Fetching tag usage statistics');
+
+    // Make a GET request to fetch the tag usage statistics
+    const response = await fetch(`${API_BASE_URL}/tag-usage`);
+
+    // Check if the response is okay
+    if (!response.ok) {
+      throw new Error(`Failed to fetch tag usage statistics: HTTP status ${response.status}`);
+    }
+
+    // Parse and return the JSON response
+    const data = await response.json();
+    console.log('Tag usage statistics response:', data);
+    return data;
+
+  } catch (error) {
+    // Log the error and re-throw it so the caller can handle it
+    console.error('Error in getTagUsage:', error);
+    throw error;
+  }
+};
+
+/**
  * Delete a welfare analysis by its unique analysis ID
  *
  * This permanently removes the welfare analysis from the database.

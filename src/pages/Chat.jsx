@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { FiCopy, FiCheck } from 'react-icons/fi'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { saveConversation } from '../services/historyService'
+import { getPromptFromCommand } from '../constants/researchPrompts'
 import '../App.css'
 
 function Chat() {
@@ -71,6 +72,10 @@ function Chat() {
   const sendMessage = async () => {
     if (!inputMessage.trim()) return
 
+    // Check if message is a slash command and get the full prompt
+    const promptFromCommand = getPromptFromCommand(inputMessage.trim())
+    const messageToSend = promptFromCommand || inputMessage
+
     // Generate conversation ID on first message
     let currentConversationId = conversationId
     if (!currentConversationId) {
@@ -84,8 +89,8 @@ function Chat() {
       setContextLocked(true)
     }
 
-    // Add user message to chat
-    const userMessage = { role: 'user', content: inputMessage }
+    // Add user message to chat (use the full prompt if command was used)
+    const userMessage = { role: 'user', content: messageToSend }
     const updatedMessages = [...messages, userMessage]
     setMessages(updatedMessages)
     setInputMessage('')

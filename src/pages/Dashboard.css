@@ -1,0 +1,63 @@
+/* Dashboard Page Styles - Dark theme with accent color #D2691E */
+
+/* Dashboard container using CSS Grid for flexible layout */
+.dashboard-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* Dashboard heading */
+.page-container h1 {
+  color: #D2691E;
+  font-size: 2rem;
+  padding: 1.5rem 2rem 0 2rem;
+  margin: 0;
+  font-weight: bold;
+}
+
+/* Animation for dashboard components */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboard-container > * {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+/* Responsive design for tablets */
+@media (max-width: 1024px) {
+  .dashboard-container {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    padding: 1.5rem;
+  }
+
+  .page-container h1 {
+    font-size: 1.75rem;
+    padding: 1.25rem 1.5rem 0 1.5rem;
+  }
+}
+
+/* Responsive design for mobile devices */
+@media (max-width: 768px) {
+  .dashboard-container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .page-container h1 {
+    font-size: 1.5rem;
+    padding: 1rem 1rem 0 1rem;
+  }
+}

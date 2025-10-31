@@ -1,49 +1,72 @@
 /* ToolsPage Styles - Dark theme with accent color #D2691E */
 
 .tools-page {
-  min-height: 100vh;
+  height: 100vh;
   background-color: #282c34;
   color: #ffffff;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
 }
 
 /* Header with title and back button */
 .tools-header {
+  width: 100%;
   max-width: 1600px;
-  margin: 0 auto 20px;
+  margin: 0 auto 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 15px;
-  border-bottom: 2px solid #D2691E;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #D2691E;
+  flex-shrink: 0;
 }
 
-.tools-header h1 {
+.tools-page .tools-header h1 {
   margin: 0;
   color: #D2691E;
-  font-size: 28px;
+  font-size: 16px !important;
+  line-height: 1.2;
 }
 
-.back-to-history-btn {
-  padding: 12px 24px;
+/* Header buttons container */
+.tools-page .header-buttons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Shared button styles */
+.tools-page .back-to-history-btn,
+.tools-page .download-report-btn {
+  padding: 6px 12px !important;
   background-color: #D2691E;
   color: white;
   border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: bold;
+  border-radius: 4px;
+  font-size: 12px !important;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.back-to-history-btn:hover {
+.tools-page .back-to-history-btn:hover,
+.tools-page .download-report-btn:hover:not(:disabled) {
   background-color: #c55a14;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(210, 105, 30, 0.3);
 }
 
-.back-to-history-btn:active {
+.tools-page .back-to-history-btn:active,
+.tools-page .download-report-btn:active:not(:disabled) {
   transform: translateY(0);
+}
+
+.tools-page .download-report-btn:disabled {
+  background-color: #666;
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 /* Main container - Two column layout */
@@ -53,7 +76,8 @@
   display: grid;
   grid-template-columns: 60% 40%;
   gap: 1.5rem;
-  height: calc(100vh - 100px);
+  flex: 1;
+  min-height: 0;
 }
 
 /* Loading and error states */
@@ -76,34 +100,52 @@
   max-height: 100%;
 }
 
+/* Header row with title and info side by side */
+.conversation-header-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem !important;
+}
+
 .conversation-display h2 {
-  margin-top: 0;
-  margin-bottom: 20px;
+  margin: 0 !important;
   color: #D2691E;
-  font-size: 24px;
+  font-size: 1rem !important;
+  white-space: nowrap;
+  line-height: 1.2 !important;
 }
 
 .conversation-info {
   background-color: #2d3139;
-  padding: 8px 12px;
-  border-radius: 6px;
-  margin-bottom: 15px;
+  padding: 0.4rem 0.75rem !important;
+  border-radius: 4px;
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
   align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  font-size: 0.8rem !important;
+  line-height: 1.3 !important;
 }
 
 .conversation-info p {
-  margin: 0;
-  font-size: 12px;
-  color: #ddd;
+  margin: 0 !important;
   white-space: nowrap;
+  color: #ddd;
+  line-height: 1.3 !important;
+}
+
+/* Add separators between items */
+.conversation-info p:not(:last-child)::after {
+  content: "•";
+  margin-left: 0.75rem;
+  color: #666;
 }
 
 .conversation-info strong {
   color: #D2691E;
-  margin-right: 4px;
+  margin-right: 0.25rem;
 }
 
 /* Messages container */

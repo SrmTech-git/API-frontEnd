@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { FiHome, FiMessageSquare, FiTool, FiClock, FiMenu, FiX } from 'react-icons/fi'
+import { FiHome, FiMessageSquare, FiClock, FiGrid, FiMenu, FiX } from 'react-icons/fi'
 import './Sidebar.css'
 
 function Sidebar() {
@@ -10,7 +10,7 @@ function Sidebar() {
   const navItems = [
     { path: '/', label: 'Home', icon: FiHome },
     { path: '/chat', label: 'Chat', icon: FiMessageSquare },
-    { path: '/tools', label: 'Tools', icon: FiTool },
+    { path: '/dashboard', label: 'Dashboard', icon: FiGrid },
     { path: '/history', label: 'History', icon: FiClock }
   ]
 
